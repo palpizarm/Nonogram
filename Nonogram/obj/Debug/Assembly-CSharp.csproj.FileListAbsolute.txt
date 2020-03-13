@@ -1,0 +1,2 @@
+d:\Desktop\Analisis\Project 1\Nonogram\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+d:\Desktop\Analisis\Project 1\Nonogram\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

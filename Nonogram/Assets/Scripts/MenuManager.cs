@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEngine.UIElements;
 
 public class MenuManager : MonoBehaviour
 {
     private string pathFile;
-
+    private Reader reader = Reader.getInstace();
+    
     public void PlayGame() {
         SceneManager.LoadScene(1);
     }
@@ -19,7 +19,9 @@ public class MenuManager : MonoBehaviour
 
     public void LoadGame() {
         pathFile = EditorUtility.OpenFilePanel("Game File", "","");
-        Debug.Log(pathFile);
+        if (reader.ReadFile(pathFile)) {
+            
+        }
     }
 
 }

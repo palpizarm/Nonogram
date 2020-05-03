@@ -5,7 +5,7 @@ using UnityEngine;
 public class NonogramSolver : MonoBehaviour {
 
     private Reader reader;
-    private int[][] nonogram;
+    private bool[][] nonogram;
     private int[][] rowsHints;
     private int[][] columnsHints;
     private int rows;
@@ -21,48 +21,56 @@ public class NonogramSolver : MonoBehaviour {
     }
 
     private void createdMatrix() {
-        nonogram = new int[rows][];
+        nonogram = new bool[rows][];
         for (int row = 0; row < rows; row++) {
-            nonogram[row] = new int[columns];
+            nonogram[row] = new bool[columns];
             for (int column = 0; column < columns; column++) {
-                nonogram[row][column] = 0;
+                nonogram[row][column] = false;
             }
         }
     }
 
-    public void startSolver() {
-        int hintIndex = 0;
-        for (int row = 0; row < rows; row++) {
-            int[] hints = rowsHints[row];
-            for (int column = 0; column < columns; column++) {
-                nonogram[row][column] = 1;
-            }
-        }
+    public void startSolver() {}
+
+    public void findSolution() {}
+
+    private bool verify(int hintsIndex, int row, int length) {
+        return true;
     }
 
-    private bool verify(int hintsIndex, int column, int length) {
-        return verifyColumn(columnsHints[hintsIndex], nonogram[column], length);
-    }
 
-    private bool verifyColumn(int[] hints, int [] row, int length) {
-        bool valid = true;
-        int index = 0;
-        int rowFilled = 0;
-        for (int count = 0; count <= length; count++){
-            if (row[count] == 1) {
-                rowFilled++;
-                if (rowFilled > hints[index]) {
-                    valid = false;
-                    break; // break the loop to return valid value(false)
+    // check if the filling of the row is valid 
+    private bool verifyRow(int[] hints, bool [] row, int length) {
+        int hintCount = 0;
+        int marks = 0;
+        bool lastMark = false;
+        // Check cell to cell if the row is correct
+        for (int index = 0; index <= length; index++) {
+            if (row[index]) {
+                marks++;
+                if (!lastMark) {
+                    if (hints.Length <= hintCount) {
+                        return false;
+                    }
                 }
-            }
-            else if(rowFilled > 0 && row[count] == 0) {
-                rowFilled = 0; // set cero to start again
-                index++;
+                lastMark = true;
+            } else {
+                if (lastMark) {
+                    if(hints[hintCount] != marks) {
+                        return false;
+                    }
+                    marks = 0;
+                    hintCount++;
+                }
+                lastMark = false;
             }
         }
-        // validate the row/column is done
-        return valid;   
+        // verify if the row is done
+        if (length == columns - 1) {
+            return hintCount == hints.Length - 1 &&
+            marks == hints[hintCount];
         }
+        return true;
+    }
 
 }

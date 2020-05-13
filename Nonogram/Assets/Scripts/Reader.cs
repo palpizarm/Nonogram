@@ -19,12 +19,14 @@ public class Reader {
         rows = 0;
         columns = 0;
     }
+
     public static Reader getInstace() {
         if (reader == null) {
             reader = new Reader();
         }
         return reader;
     }
+
     public bool ReadFile(string pFile = "") {
         bool readed = false;
         if (pFile != "") {
@@ -45,6 +47,7 @@ public class Reader {
                 columns = int.Parse(entries[1]);
                 rowsHints = new int[rows][];
                 columnsHints = new int[columns][];
+                print("FILAS");
                 line = file.ReadLine();
                 int rowNumber = 0;
                 for (rowNumber = 0; rowNumber < rows; rowNumber++) {
@@ -53,9 +56,11 @@ public class Reader {
                     int[] hints = new int[entries.Length];
                     for(int count = 0; count < entries.Length; count++){
                         hints[count] = int.Parse(entries[count]);
+                        print(hints[count]);
                     }
                     rowsHints[rowNumber] = hints;
                 }
+                print("COLUMNAS");
                 line = file.ReadLine();
                 for (rowNumber = 0; rowNumber < rows; rowNumber++) {
                     line = file.ReadLine();
@@ -63,6 +68,7 @@ public class Reader {
                     int[] hints = new int[entries.Length];
                     for(int count = 0; count < entries.Length; count++){
                         hints[count] = int.Parse(entries[count]);
+                        print(hints[count]);
                     }
                     columnsHints[rowNumber] = hints;
                 }

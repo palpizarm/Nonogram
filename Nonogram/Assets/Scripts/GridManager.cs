@@ -6,9 +6,16 @@ public class GridManager : MonoBehaviour
 {
 
     private Reader reader = Reader.getInstace();
-    [SerializeField]private int rows;
-    [SerializeField]private int columns;
-    [SerializeField]private float tileSize = 1;
+
+    private GameObject[,] grid;
+    private int rows;
+    private int columns;
+    private float tileWidth;
+    private float tileHeight;
+    public float padding;
+    public Sprite empty;
+    public Sprite fill;
+    public GameObject container;
     // Start is called before the first frame update
     void Start() {
         GenerateGrid();
@@ -19,26 +26,37 @@ public class GridManager : MonoBehaviour
         columns = reader.getColums();*/
         rows = 5;
         columns = 5;
-        float gridWidth = columns*tileSize;
-        float gridHeight = rows*tileSize;
-
-        GameObject referenceTile = (GameObject)Instantiate(Resources.Load("GrassTile"));
+        tileWidth = container.GetComponent<RectTransform>().rect.width/columns;
+        tileHeight = container.GetComponent<RectTransform>().rect.height/rows;
+        grid = new GameObject[rows,columns];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++){
-                GameObject tile = (GameObject)Instantiate(referenceTile,transform);
-                float posX = column * tileSize;
-                float posY = row * -tileSize;
-                tile.transform.position = new Vector2(posX,posY);
+                GameObject g = new GameObject("row: "+ row+"column: "+column);
+                g.transform.parent = container.transform;
+                g.AddComponent<RectTransform>().position = new Vector3(row,
+                column, 0);
+                g.GetComponent<RectTransform>().pivot = new Vector2(0,0);
+                g.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                g.AddComponent<SpriteRenderer>().sprite = empty;
+                grid[row,column] = g;
+                
             }
         }
-        Destroy(referenceTile);
-        transform.position = new Vector2(-gridWidth/2+tileSize/2, gridHeight/2+tileSize/2);
     }
 
 
-    private void updateGrid(int[,] grid) {
-
+    private void updateGrid(bool[][] game) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++){
+                if (game[row][column]) {
+                    grid[row,column].AddComponent<SpriteRenderer>().sprite = fill;
+                }else {
+                    grid[row,column].AddComponent<SpriteRenderer>().sprite = empty;
+                }
+            }
+        }
     }
+
     // Update is called once per frame
     void Update() {
 

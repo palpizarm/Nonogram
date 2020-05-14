@@ -1,31 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO;
 using System;
+using UnityEditor;
 
-public class Reader: MonoBehaviour
-{
-   private int rows = 0;
-   private int columns = 0;
-   private int[][] rowsHints = null;
-   private int[][] columnsHints = null;
 
-   public Reader(string pFile = "") {
-       if (pFile != "") {
+/*
+Singleton Class
+*/
+public class Reader {
+    private static Reader reader = null;
+    private int rows;
+    private int columns;
+    private int[][] rowsHints;
+    private int[][] columnsHints;
+
+    private Reader() {
+        rows = 0;
+        columns = 0;
+    }
+
+    public static Reader getInstace() {
+        if (reader == null) {
+            reader = new Reader();
+        }
+        return reader;
+    }
+
+    public bool ReadFile(string pFile = "") {
+        bool readed = false;
+        if (pFile != "") {
             StreamReader fileData = new StreamReader(pFile); 
-            ReadData(fileData);
+            readed = ReadData(fileData);
             fileData.Close();
-       }
-   }
+        }
+        return readed;
+    }
 
-   public void setFile(string pFile) {
-        StreamReader fileData = new StreamReader(pFile);
-        ReadData(fileData);
-        fileData.Close();
-   }
-
-    private void ReadData(StreamReader file) {
+    private bool ReadData(StreamReader file) {
         string line;
         using (file){
             try {
@@ -37,32 +48,32 @@ public class Reader: MonoBehaviour
                 columnsHints = new int[columns][];
                 line = file.ReadLine();
                 int rowNumber = 0;
-                while (line != "COLUMNAS") {
-                   line = file.ReadLine();
-                   entries = line.Split(',');
-                   int[] hints = new int[entries.Length];
-                   for(int count = 0; count < entries.Length; count++){
-                       hints[count] = int.Parse(entries[count]);
-                    }
-                rowsHints[rowNumber] = hints;
-                rowNumber++;
-                }
-                rowNumber = 0;
-                while((line = file.ReadLine()) == null) {
+                for (rowNumber = 0; rowNumber < rows; rowNumber++) {
                     line = file.ReadLine();
                     entries = line.Split(',');
                     int[] hints = new int[entries.Length];
                     for(int count = 0; count < entries.Length; count++){
                         hints[count] = int.Parse(entries[count]);
                     }
-                columnsHints[rowNumber] = hints;
-                rowNumber++;
+                    rowsHints[rowNumber] = hints;
+                }
+                line = file.ReadLine();
+                for (rowNumber = 0; rowNumber < rows; rowNumber++) {
+                    line = file.ReadLine();
+                    entries = line.Split(',');
+                    int[] hints = new int[entries.Length];
+                    for(int count = 0; count < entries.Length; count++){
+                        hints[count] = int.Parse(entries[count]);
+                    }
+                    columnsHints[rowNumber] = hints;
                 }
             
             } catch(Exception e) {
-                Console.WriteLine(e.Message);
+                Debug.Log(e.Message);
+                return false;
             }
         }
+        return true;
    }
 
     public int getRows() {
@@ -80,5 +91,4 @@ public class Reader: MonoBehaviour
     public int[][] getColumnsHints() {
         return columnsHints;
     }
-
 }

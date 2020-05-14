@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3261e57dac1e44ab8860665e5162d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadWarning: {fileID: 0}
 --- !u!1 &134653768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1585,7 +1586,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1437306355}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 41458766}
+        m_MethodName: StartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1437306355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2063,6 +2075,11 @@ PrefabInstance:
         type: 3}
       propertyPath: orthographic size
       value: 148.02408
+      objectReference: {fileID: 0}
+    - target: {fileID: 4682618970948290565, guid: 01d7d732816c4ff4fa8674e4aba871a5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4682618970948290566, guid: 01d7d732816c4ff4fa8674e4aba871a5,
         type: 3}

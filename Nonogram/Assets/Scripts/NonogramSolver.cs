@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class NonogramSolver : MonoBehaviour {
+public class NonogramSolver {
 
     private Reader reader; // get data
     private bool[][] nonogram; // matrix with a solution
@@ -30,25 +30,31 @@ public class NonogramSolver : MonoBehaviour {
         }
     }
 
-    public void startSolver() {
-
+    public bool startSolver() {
+        var watch = new System.Diagnostics.Stopwatch();
+        watch.Start();
+        bool result = solver(0, 0);
+        watch.Stop();
+        Debug.Log(watch.ElapsedMilliseconds);
+        Debug.Log(result);
+        return result;
     }
 
 
     // return false if there isn't any solution
     // return true if there is a solution
     public bool solver(int rowIndex = 0, int columnIndex = 0) {
-        if (rowIndex == rows && columnIndex == columns) return true;
+        if (rowIndex == rows -1 && columnIndex == columns -1) return true;
         // put a mark in a cell and check if is correct
         nonogram[rowIndex][columnIndex] = true;
         if (verify(rowIndex,columnIndex) &&
-        solver(rowIndex = (columnIndex == columns - 1) ?  0 : rowIndex + 1, (columnIndex+1)%columns)) {
+        solver(rowIndex = (columnIndex == columns - 1) ? rowIndex + 1 : rowIndex, (columnIndex+1)%columns)) {
             return true;
         };
         // clean the cell and check
-        nonogram[columnIndex][rowIndex] = false;
+        nonogram[rowIndex][columnIndex] = false;
         if (verify(rowIndex,columnIndex) &&
-        solver(rowIndex = (columnIndex == columns - 1) ?  rowIndex + 1 : 0, (columnIndex+1)%columns)) {
+        solver(rowIndex = (columnIndex == columns - 1) ?  rowIndex + 1 : rowIndex, (columnIndex+1)%columns)) {
             return true;
         };
         // is no find a solution return false
@@ -58,9 +64,9 @@ public class NonogramSolver : MonoBehaviour {
     private bool verify(int row, int column) {
         return (
             // check vertical line
-          verifyRowColumn(rowsHints[row], nonogram[row], row) &&
+          verifyRowColumn(rowsHints[row], nonogram[row], column) &&
           // check horizontal line
-          verifyRowColumn(columnsHints[column], getColum(column), column)
+          verifyRowColumn(columnsHints[column], getColum(column), row)
         );
     }
 
@@ -91,11 +97,25 @@ public class NonogramSolver : MonoBehaviour {
                 }
             }
         }
+
         // verify if the row is done
-        if (length == columns - 1) {
-            return hintCount == hints.Length - 1 &&
-            marks == hints[hintCount];
+        if (length == columns - 1)
+        {
+            if (lastMark)
+            {
+                return hintCount == hints.Length - 1 &&
+                marks == hints[hintCount];
+            }
+            else
+            {
+                return hintCount == hints.Length;
+            }
         }
+        else if (lastMark)
+        {
+            return marks <= hints[hintCount];
+        }
+
         return true;
     }
 

@@ -8,9 +8,11 @@ public class GameManager : MonoBehaviour
     public GameObject loadWarning;
     private string pathFile;
     private Reader reader = Reader.getInstace();
+    private NonogramSolver solver = new NonogramSolver();
+    private bool fileLoad = false;
     
     public void PlayGame() {
-        if (pathFile != "") {
+        if (fileLoad) {
             SceneManager.LoadScene(1);
         } else {
             ShowLoadWarning();
@@ -18,7 +20,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void QuitGame() {
-        Debug.Log("Quit");
+        print("¡QUIT!");
         Application.Quit();
     }
 
@@ -32,12 +34,23 @@ public class GameManager : MonoBehaviour
 
     public void LoadGame() {
         pathFile = EditorUtility.OpenFilePanel("Game File","Assets/Resources/pruebas","txt");
-        if (!reader.ReadFile(pathFile)) {
-            // make a alert dialog
+        if (!(fileLoad = reader.ReadFile(pathFile))) {
+            ShowLoadWarning();
         }
     }
     
     public void Back() {
         SceneManager.LoadScene(0);
+    }
+
+    public void StartGame()
+    {
+        if (solver.startSolver())
+        {
+
+        } else
+        {
+
+        }
     }
 }

@@ -22,10 +22,8 @@ public class GridManager : MonoBehaviour
     }
 
     private void GenerateGrid() {
-        /*rows = reader.getRows();
-        columns = reader.getColums();*/
-        rows = 5;
-        columns = 5;
+        rows = reader.getRows();
+        columns = reader.getColums();
         tileWidth = container.GetComponent<RectTransform>().rect.width/columns;
         tileHeight = container.GetComponent<RectTransform>().rect.height/rows;
         grid = new GameObject[rows,columns];

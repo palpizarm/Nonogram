@@ -2,15 +2,18 @@
 
 public class NonogramSolver {
 
-    private Reader reader; // get data
+    private static NonogramSolver nonogramSolver;
+
+    private Reader reader = Reader.getInstace(); // get data
     private bool[][] nonogram; // matrix with a solution
     private int[][] rowsHints; 
     private int[][] columnsHints;
     private int rows; // count of row
     private int columns; // count of column
+    private string time;
+    private bool isSolution = false;
 
-    public NonogramSolver() {
-        reader = Reader.getInstace();
+    private NonogramSolver() {
         rowsHints = reader.getRowsHints();
         columnsHints = reader.getColumnsHints();
         rows = reader.getRows();
@@ -18,6 +21,14 @@ public class NonogramSolver {
         createdMatrix();
     }
 
+    public static NonogramSolver getInstance()
+    {
+        if (nonogramSolver == null || nonogramSolver.getNonogram().Length == 0)
+        {
+            nonogramSolver = new NonogramSolver();
+        }
+        return nonogramSolver;
+    }
 
     // create a matrix with false value (empty)
     private void createdMatrix() {
@@ -33,18 +44,27 @@ public class NonogramSolver {
     public bool startSolver() {
         var watch = new System.Diagnostics.Stopwatch();
         watch.Start();
-        bool result = solver(0, 0);
+        isSolution = solver(0, 0);
         watch.Stop();
+        TimeFormat(watch.ElapsedMilliseconds);
+        Debug.Log(isSolution);
         Debug.Log(watch.ElapsedMilliseconds);
-        Debug.Log(result);
-        return result;
+        printSolution();
+
+        return isSolution;
+    }
+
+
+    public bool getIsSolution()
+    {
+        return isSolution;
     }
 
 
     // return false if there isn't any solution
     // return true if there is a solution
     public bool solver(int rowIndex = 0, int columnIndex = 0) {
-        if (rowIndex == rows -1 && columnIndex == columns -1) return true;
+        if (rowIndex == rows) return true;
         // put a mark in a cell and check if is correct
         nonogram[rowIndex][columnIndex] = true;
         if (verify(rowIndex,columnIndex) &&
@@ -126,6 +146,54 @@ public class NonogramSolver {
             array[index] = nonogram[index][column];
         }
         return array;
+    }
+
+    public string getTime()
+    {
+        return time;
+    }
+
+    private void TimeFormat(long miliseconds)
+    {
+        int seconds = (int)miliseconds / 1000;
+        miliseconds %= 1000;
+        int minutes  = seconds / 60;
+        seconds %= 60;
+        time = "00:" + minutes + ":" + seconds + ":" + miliseconds; 
+    }
+
+    public bool[][] getNonogram()
+    {
+        return nonogram;
+    }
+
+    public void printSolution()
+    {
+        string solution = "";
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (nonogram[row][column])
+                {
+                    solution += "1 ";
+                } else
+                {
+                    solution += "0 ";
+                }
+            }
+            solution += "\n";
+        }
+        Debug.Log(solution);
+    }
+
+    public void clean()
+    {
+        nonogram = new bool[0][];
+        rowsHints = new int[0][];
+        columnsHints = new int[0][];
+        rows = 0;
+        columns = 0;
+        time = "";
+        isSolution = false;
     }
 
 }

@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
-    public GameObject loadWarning;
     private string pathFile;
     private Reader reader = Reader.getInstace();
-    private NonogramSolver solver = new NonogramSolver();
+    private NonogramSolver solver = NonogramSolver.getInstance();
     private bool fileLoad = false;
-    
+    public GameObject loadWarning;
+    public GameObject timeText;
+    public GameObject BackButton;
+    public GameObject StartButton;
+    public GameObject noSolution;
+
     public void PlayGame() {
         if (fileLoad) {
             SceneManager.LoadScene(1);
@@ -32,6 +36,11 @@ public class GameManager : MonoBehaviour
         loadWarning.SetActive(false);
     }
 
+    public void QuitMessage()
+    {
+        noSolution.SetActive(false);
+    }
+
     public void LoadGame() {
         pathFile = EditorUtility.OpenFilePanel("Game File","Assets/Resources/pruebas","txt");
         if (!(fileLoad = reader.ReadFile(pathFile))) {
@@ -40,17 +49,28 @@ public class GameManager : MonoBehaviour
     }
     
     public void Back() {
+        solver.clean();
         SceneManager.LoadScene(0);
     }
 
     public void StartGame()
     {
-        if (solver.startSolver())
+        if (reader.fileReaded())
         {
-
-        } else
-        {
-
+            StartButton.GetComponent<Button>().interactable = false;
+            BackButton.GetComponent<Button>().interactable = false;
+            if (solver.startSolver())
+            {
+                timeText.GetComponent<Text>().text = solver.getTime();
+               
+            }
+            else
+            {
+                noSolution.SetActive(true);
+                timeText.GetComponent<Text>().text = solver.getTime();
+            }
+            StartButton.GetComponent<Button>().interactable = true;
+            BackButton.GetComponent<Button>().interactable = true;
         }
     }
 }

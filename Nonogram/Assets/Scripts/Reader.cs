@@ -13,6 +13,7 @@ public class Reader {
     private int columns;
     private int[][] rowsHints;
     private int[][] columnsHints;
+    private bool readed;
 
     private Reader() {
         rows = 0;
@@ -27,12 +28,17 @@ public class Reader {
     }
 
     public bool ReadFile(string pFile = "") {
-        bool readed = false;
+        readed = false;
         if (pFile != "") {
             StreamReader fileData = new StreamReader(pFile); 
             readed = ReadData(fileData);
             fileData.Close();
         }
+        return readed;
+    }
+
+    public bool fileReaded()
+    {
         return readed;
     }
 

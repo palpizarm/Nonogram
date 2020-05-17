@@ -55,7 +55,6 @@ public class VerticalClues : MonoBehaviour
             position[0] += row * width + width / 2;
             textUI.GetComponent<RectTransform>().anchoredPosition3D = position;
             textUI.GetComponent<RectTransform>().sizeDelta = new Vector2(21.5f, 100f);
-
         }
         
     }

@@ -97,4 +97,14 @@ public class Reader {
     public int[][] getColumnsHints() {
         return columnsHints;
     }
+
+    public void clean()
+    {
+        reader = null;
+        rows = 0;
+        columns = 0;
+        rowsHints = new int[0][];
+        columnsHints = new int[0][];
+        readed = false;
+    }
 }

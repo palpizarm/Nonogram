@@ -46,9 +46,8 @@ public class NonogramSolver {
         watch.Start();
         isSolution = solver(0, 0);
         watch.Stop();
-        TimeFormat(watch.ElapsedMilliseconds);
+        time = watch.Elapsed.ToString();
         Debug.Log(isSolution);
-        Debug.Log(watch.ElapsedMilliseconds);
         printSolution();
 
         return isSolution;
@@ -151,15 +150,6 @@ public class NonogramSolver {
     public string getTime()
     {
         return time;
-    }
-
-    private void TimeFormat(long miliseconds)
-    {
-        int seconds = (int)miliseconds / 1000;
-        miliseconds %= 1000;
-        int minutes  = seconds / 60;
-        seconds %= 60;
-        time = "00:" + minutes + ":" + seconds + ":" + miliseconds; 
     }
 
     public bool[][] getNonogram()

@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     }
     
     public void Back() {
+        reader.clean();
         solver.clean();
         SceneManager.LoadScene(0);
     }

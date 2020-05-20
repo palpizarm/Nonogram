@@ -2,8 +2,8 @@
 Program to solve nonograms with backtracking
 
 
-Pablo Alpizar Monge
-Instituto Tecnlogico de Costa Rica
++ Pablo Alpizar Monge
++ Instituto Tecnlogico de Costa Rica
 
 
 - Proyecto #1

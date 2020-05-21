@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Concurrent;
+using UnityEngine;
 
 public class NonogramSolver {
 
@@ -12,12 +13,14 @@ public class NonogramSolver {
     private int columns; // count of column
     private string time;
     private bool isSolution = false;
+    public ConcurrentQueue<int[]> steps;
 
     private NonogramSolver() {
         rowsHints = reader.getRowsHints();
         columnsHints = reader.getColumnsHints();
         rows = reader.getRows();
         columns = reader.getColums();
+        steps = new ConcurrentQueue<int[]>();
         createdMatrix();
     }
 
@@ -41,11 +44,21 @@ public class NonogramSolver {
         }
     }
 
-    public bool startSolver() {
+    public bool startSolver(bool animate) {
         var watch = new System.Diagnostics.Stopwatch();
-        watch.Start();
-        isSolution = solver(0, 0);
-        watch.Stop();
+        
+        if (animate)
+        {
+            watch.Start();
+            isSolution = solverWithSteps(0, 0);
+            watch.Stop();
+        } else
+        {
+            watch.Start();
+            isSolution = solver(0, 0);
+            watch.Stop();
+        }
+
         time = watch.Elapsed.ToString();
         Debug.Log(isSolution);
         printSolution();
@@ -57,6 +70,32 @@ public class NonogramSolver {
     public bool getIsSolution()
     {
         return isSolution;
+    }
+
+
+    // return false if there isn't any solution
+    // return true if there is a solution
+    public bool solverWithSteps(int rowIndex = 0, int columnIndex = 0)
+    {
+        if (rowIndex == rows) return true;
+        // put a mark in a cell and check if is correct
+        steps.Enqueue(new int[] { rowIndex, columnIndex, 1 });
+        nonogram[rowIndex][columnIndex] = true;
+        if (verify(rowIndex, columnIndex) &&
+        solverWithSteps(rowIndex = (columnIndex == columns - 1) ? rowIndex + 1 : rowIndex, (columnIndex + 1) % columns))
+        {
+            return true;
+        };
+        // clean the cell and check
+        steps.Enqueue(new int[] { rowIndex, columnIndex, 0 });
+        nonogram[rowIndex][columnIndex] = false;
+        if (verify(rowIndex, columnIndex) &&
+        solverWithSteps(rowIndex = (columnIndex == columns - 1) ? rowIndex + 1 : rowIndex, (columnIndex + 1) % columns))
+        {
+            return true;
+        };
+        // is no find a solution return false
+        return false;
     }
 
 
@@ -183,6 +222,7 @@ public class NonogramSolver {
         rows = 0;
         columns = 0;
         time = "";
+        steps = new ConcurrentQueue<int[]>();
         isSolution = false;
     }
 

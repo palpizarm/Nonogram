@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject BackButton;
     public GameObject StartButton;
     public GameObject noSolution;
+    public GameObject Animate;
 
     public void PlayGame() {
         if (fileLoad) {
@@ -60,16 +61,15 @@ public class GameManager : MonoBehaviour
         {
             StartButton.GetComponent<Button>().interactable = false;
             BackButton.GetComponent<Button>().interactable = false;
-            if (solver.startSolver())
-            {
-                timeText.GetComponent<Text>().text = solver.getTime();
-               
-            }
-            else
+            Animate.GetComponent<Toggle>().interactable = false;
+
+            if (!solver.startSolver(Animate.GetComponent<Toggle>().isOn))
             {
                 noSolution.SetActive(true);
-                timeText.GetComponent<Text>().text = solver.getTime();
             }
+
+            timeText.GetComponent<Text>().text = solver.getTime();
+            Animate.GetComponent<Toggle>().interactable = true;
             StartButton.GetComponent<Button>().interactable = true;
             BackButton.GetComponent<Button>().interactable = true;
         }

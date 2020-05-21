@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Threading;
+using System.Threading.Tasks;
+
 
 public class GridManager : MonoBehaviour
 {
-
     private Reader reader = Reader.getInstace();
     private NonogramSolver solver = NonogramSolver.getInstance();
     private GameObject[,] grid;
@@ -16,11 +17,21 @@ public class GridManager : MonoBehaviour
     public Sprite fill;
     public GameObject container;
     public GameObject template;
+    public GameObject Animate;
+    Thread update;
 
 
     // Start is called before the first frame update
     void Start() {
         GenerateGrid();
+        update = new Thread(() =>
+       {
+           while(true)
+           {
+               Update();
+           }
+       });
+        update.Start();
     }
 
     public void GenerateGrid() {
@@ -52,21 +63,53 @@ public class GridManager : MonoBehaviour
         }
     }
 
+
     void Update() {
-        bool[][] game = solver.getNonogram();
-        for (int row = 0; row < rows; row++)
+        if (Animate.GetComponent<Toggle>().isOn)
         {
-            for (int column = 0; column < columns; column++)
+            int squarePeerFrame = (int)(solver.steps.Count * 0.10);
+            if (squarePeerFrame < 100)
             {
-                if (game[row][column])
+                squarePeerFrame = 1;
+            } else if (squarePeerFrame > 500)
+            {
+                squarePeerFrame = 50;
+            }
+            int index = 0;
+            while (index < squarePeerFrame)
+            {
+                int[] step;
+                solver.steps.TryDequeue(out step);
+                if (step[2] == 1)
                 {
-                    grid[row, column].GetComponent<Image>().sprite = fill;
+                    grid[step[0], step[1]].GetComponent<Image>().sprite = fill;
                 }
                 else
                 {
-                    grid[row, column].GetComponent<Image>().sprite = empty;
+                    grid[step[0], step[1]].GetComponent<Image>().sprite = empty;
+                }
+                index++;
+            }
+
+        }
+        else if (solver.getIsSolution() && !Animate.GetComponent<Toggle>().isOn)
+        {
+            bool[][] game = solver.getNonogram();
+            for (int row = 0; row < rows; row++)
+            {
+                for (int column = 0; column < columns; column++)
+                {
+                    if (game[row][column])
+                    {
+                        grid[row, column].GetComponent<Image>().sprite = fill;
+                    }
+                    else
+                    {
+                        grid[row, column].GetComponent<Image>().sprite = empty;
+                    }
                 }
             }
         }
     }
+
 }
